@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随机数分配器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #e0e0ff;
+            line-height: 1.6;
+        }
+        
+        .counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .counter i {
+            color: #ffd700;
+            font-size: 1.3rem;
+        }
+        
+        .control-panel {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .range-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(25, 25, 60, 0.6);
+            padding: 12px 25px;
+            border-radius: 50px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .range-control label {
+            font-weight: 600;
+            color: #f0f0ff;
+            font-size: 1.1rem;
+        }
+        
+        .range-control input {
+            width: 90px;
+            padding: 10px 15px;
+            border: 2px solid #4e54c8;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            text-align: center;
+            background: rgba(255,255,255,0.9);
+            font-weight: 600;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            color: white;
+            border: none;
+            padding: 15px 32px;
+            font-size: 1.15rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(78, 84, 200, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(78, 84, 200, 0.6);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn-generate {
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            padding: 16px 45px;
+            font-size: 1.3rem;
+            box-shadow: 0 6px 20px rgba(255, 126, 95, 0.5);
+        }
+        
+        .btn-generate:hover {
+            box-shadow: 0 8px 25px rgba(255, 126, 95, 0.7);
+        }
+        
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .person-card {
+            background: linear-gradient(135deg, rgba(40, 45, 120, 0.8), rgba(30, 35, 90, 0.9));
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .person-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+        
+        .person-card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .person-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .random-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #ffd700;
+            margin: 10px 0;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .min-max {
+            font-size: 1rem;
+            color: #aaaaff;
+            margin-top: 10px;
+        }
+        
+        .history-section {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .history-title {
+            font-size: 1.8rem;
+            color: #feb47b;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .history-container {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(20, 20, 50, 0.4);
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .history-item {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+        
+        .history-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-time {
+            color: #aaaaff;
+            font-size: 0.95rem;
+            min-width: 160px;
+        }
+        
+        .history-range {
+            color: #ffd700;
+            font-weight: 600;
+            min-width: 120px;
+        }
+        
+        .history-numbers {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .history-number {
+            background: rgba(78, 84, 200, 0.3);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-weight: 600;
+            min-width: 45px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        
+        .btn-reset {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+        }
+        
+        .btn-download {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+        }
+        
+        .highlight {
+            animation: highlight 1.5s ease;
+        }
+        
+        @keyframes highlight {
+            0% { 
+                background: rgba(255, 218, 121, 0.3);
+                transform: scale(1.05);
+            }
+            100% { 
+                background: linear-gradient(135deg, rgba(40, 45, 120, 0.8), rgba(30, 35, 90, 0.9));
+                transform: scale(1);
+            }
+        }
+        
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 30px 0 20px;
+            font-size: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 20px;
+        }
+        
+        .run-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 800px;
+            text-align: center;
+            font-size: 1.1rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .results-container {
+                grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            }
+            
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            h1 {
+                font-size: 2.4rem;
+            }
+            
+            .counter {
+                position: static;
+                margin: 15px auto;
+                width: fit-content;
+            }
+        }
+        
+        /* 粒子背景效果 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-random"></i> 随机数分配器</h1>
+            <p class="subtitle">为指定人员分配随机数，确保结果可追溯</p>
+            <div class="counter">
+                <i class="fas fa-sync-alt"></i>
+                <span>已运行次数: <span id="run-count">0</span></span>
+            </div>
+        </header>
+        
+        <div class="run-info">
+            <i class="fas fa-info-circle"></i> 当前人员: 金牌教练, Mashiro, CL4R1TY, Nijika, 量子跃迁, 耄耋, 江川, ezking, 欧皇布偶, 缸砸仑破拿
+        </div>
+        
+        <main>
+            <div class="control-panel">
+                <div class="range-control">
+                    <label for="min-value"><i class="fas fa-arrow-down"></i> 最小值:</label>
+                    <input type="number" id="min-value" value="1" min="0" max="999">
+                </div>
+                
+                <div class="range-control">
+                    <label for="max-value"><i class="fas fa-arrow-up"></i> 最大值:</label>
+                    <input type="number" id="max-value" value="100" min="1" max="1000">
+                </div>
+                
+                <button class="btn btn-generate" id="generate-btn">
+                    <i class="fas fa-dice"></i> 生成随机数
+                </button>
+                
+                <button class="btn" id="toggle-history">
+                    <i class="fas fa-history"></i> 历史记录
+                </button>
+            </div>
+            
+            <div class="results-container" id="results-container">
+                <!-- 结果卡片将由JS动态生成 -->
+            </div>
+            
+            <div class="history-section" id="history-section">
+                <div class="history-header">
+                    <h2 class="history-title"><i class="fas fa-history"></i> 历史记录</h2>
+                    <button class="btn" id="clear-history">
+                        <i class="fas fa-trash"></i> 清空记录
+                    </button>
+                </div>
+                <div class="history-container" id="history-container">
+                    <!-- 历史记录将由JS动态生成 -->
+                </div>
+            </div>
+            
+            <div class="actions">
+                <button class="btn btn-download" id="download-btn">
+                    <i class="fas fa-file-download"></i> 导出数据
+                </button>
+                <button class="btn btn-reset" id="reset-btn">
+                    <i class="fas fa-redo"></i> 重置分配器
+                </button>
+            </div>
+        </main>
+        
+        <footer>
+            <p>© 2025 随机数分配器 | 公平 • 透明 • 可追溯</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 定义10个人员
+            const people = [
+                '金牌教练', 
+                'Mashiro', 
+                'CL4R1TY', 
+                'Nijika', 
+                '量子跃迁', 
+                '耄耋', 
+                '江川', 
+                'ezking', 
+                '欧皇布偶', 
+                '缸砸仑破拿'
+            ];
+            
+            const resultsContainer = document.getElementById('results-container');
+            const historyContainer = document.getElementById('history-container');
+            const generateBtn = document.getElementById('generate-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            const toggleHistoryBtn = document.getElementById('toggle-history');
+            const clearHistoryBtn = document.getElementById('clear-history');
+            const minValueInput = document.getElementById('min-value');
+            const maxValueInput = document.getElementById('max-value');
+            const historySection = document.getElementById('history-section');
+            const runCountElement = document.getElementById('run-count');
+            
+            let history = [];
+            let currentResults = [];
+            let runCount = 0;
+            
+            // 初始化粒子背景
+            function initParticles() {
+                const particlesContainer = document.getElementById('particles');
+                const particleCount = 30;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    // 随机大小 (2px 到 8px)
+                    const size = Math.random() * 6 + 2;
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    
+                    // 随机位置
+                    particle.style.left = `${Math.random() * 100}%`;
+                    particle.style.top = `${Math.random() * 100}%`;
+                    
+                    // 随机动画延迟
+                    particle.style.animationDelay = `${Math.random() * 15}s`;
+                    
+                    particlesContainer.appendChild(particle);
+                }
+            }
+            
+            // 从localStorage加载数据
+            function loadData() {
+                const savedHistory = localStorage.getItem('randomHistory');
+                const savedRunCount = localStorage.getItem('runCount');
+                
+                if (savedHistory) {
+                    history = JSON.parse(savedHistory);
+                }
+                
+                if (savedRunCount) {
+                    runCount = parseInt(savedRunCount);
+                    runCountElement.textContent = runCount;
+                }
+            }
+            
+            // 保存数据到localStorage
+            function saveData() {
+                localStorage.setItem('randomHistory', JSON.stringify(history));
+                localStorage.setItem('runCount', runCount.toString());
+            }
+            
+            // 初始化结果卡片
+            function initializeCards() {
+                resultsContainer.innerHTML = '';
+                people.forEach(person => {
+                    const card = document.createElement('div');
+                    card.className = 'person-card';
+                    card.innerHTML = `
+                        <div class="person-name">${person}</div>
+                        <div class="random-number">-</div>
+                        <div class="min-max">等待生成...</div>
+                    `;
+                    resultsContainer.appendChild(card);
+                });
+                currentResults = [];
+            }
+            
+            // 生成随机数
+            function generateRandomNumbers() {
+                const min = parseInt(minValueInput.value) || 0;
+                const max = parseInt(maxValueInput.value) || 100;
+                
+                if (min >= max) {
+                    alert('最大值必须大于最小值！');
+                    return;
+                }
+                
+                const cards = resultsContainer.querySelectorAll('.person-card');
+                currentResults = [];
+                
+                people.forEach((person, index) => {
+                    const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+                    currentResults.push({ person, number: randomNum });
+                    
+                    // 更新卡片
+                    cards[index].querySelector('.random-number').textContent = randomNum;
+                    cards[index].querySelector('.min-max').textContent = `范围: ${min} - ${max}`;
+                    cards[index].classList.add('highlight');
+                    
+                    // 移除高亮动画
+                    setTimeout(() => {
+                        cards[index].classList.remove('highlight');
+                    }, 1500);
+                });
+                
+                // 更新运行次数
+                runCount++;
+                runCountElement.textContent = runCount;
+                
+                // 保存到历史记录
+                saveToHistory(min, max);
+                
+                // 保存到localStorage
+                saveData();
+            }
+            
+            // 保存到历史记录
+            function saveToHistory(min, max) {
+                const timestamp = new Date().toLocaleString();
+                history.unshift({
+                    runCount: runCount,
+                    timestamp,
+                    min,
+                    max,
+                    results: [...currentResults]
+                });
+                
+                // 限制历史记录数量
+                if (history.length > 10) history.pop();
+                
+                renderHistory();
+            }
+            
+            // 渲染历史记录
+            function renderHistory() {
+                historyContainer.innerHTML = '';
+                
+                if (history.length === 0) {
+                    historyContainer.innerHTML = '<div class="history-item" style="justify-content:center;">暂无记录</div>';
+                    return;
+                }
+                
+                history.forEach(record => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    
+                    const runDiv = document.createElement('div');
+                    runDiv.className = 'history-run';
+                    runDiv.textContent = `#${record.runCount}`;
+                    runDiv.style.color = '#ff7e5f';
+                    runDiv.style.fontWeight = 'bold';
+                    runDiv.style.minWidth = '50px';
+                    
+                    const timeDiv = document.createElement('div');
+                    timeDiv.className = 'history-time';
+                    timeDiv.textContent = record.timestamp;
+                    
+                    const rangeDiv = document.createElement('div');
+                    rangeDiv.className = 'history-range';
+                    rangeDiv.textContent = `范围: ${record.min}-${record.max}`;
+                    
+                    const numbersDiv = document.createElement('div');
+                    numbersDiv.className = 'history-numbers';
+                    
+                    record.results.forEach(result => {
+                        const numSpan = document.createElement('span');
+                        numSpan.className = 'history-number';
+                        numSpan.textContent = result.number;
+                        numSpan.title = `${result.person}: ${result.number}`;
+                        numbersDiv.appendChild(numSpan);
+                    });
+                    
+                    historyItem.appendChild(runDiv);
+                    historyItem.appendChild(timeDiv);
+                    historyItem.appendChild(rangeDiv);
+                    historyItem.appendChild(numbersDiv);
+                    historyContainer.appendChild(historyItem);
+                });
+            }
+            
+            // 导出数据
+            function exportData() {
+                if (currentResults.length === 0) {
+                    alert('没有可导出的数据！');
+                    return;
+                }
+                
+                let csvContent = "data:text/csv;charset=utf-8,";
+                csvContent += "人员,随机数,运行次数\n";
+                
+                currentResults.forEach(result => {
+                    csvContent += `${result.person},${result.number},${runCount}\n`;
+                });
+                
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `随机数分配_${runCount}.csv`);
+                document.body.appendChild(link);
+                
+                link.click();
+                document.body.removeChild(link);
+            }
+            
+            // 重置分配器
+            function resetAll() {
+                if (confirm('确定要重置所有数据吗？当前结果和历史记录都将被清除。')) {
+                    currentResults = [];
+                    initializeCards();
+                }
+            }
+            
+            // 清空历史记录
+            function clearHistory() {
+                if (history.length > 0 && confirm('确定要清空所有历史记录吗？')) {
+                    history = [];
+                    renderHistory();
+                    saveData();
+                }
+            }
+            
+            // 事件监听
+            generateBtn.addEventListener('click', generateRandomNumbers);
+            resetBtn.addEventListener('click', resetAll);
+            downloadBtn.addEventListener('click', exportData);
+            clearHistoryBtn.addEventListener('click', clearHistory);
+            
+            // 初始化
+            initParticles();
+            loadData();
+            initializeCards();
+            renderHistory();
+        });
+    </script>
+</body>
+</html>
