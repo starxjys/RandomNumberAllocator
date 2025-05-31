@@ -72,7 +72,70 @@
             color: #ffd700;
             font-size: 1.3rem;
         }
+
+        .config-section { /* New common class for people management and history */
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .section-title { /* New class for titles in config sections */
+            font-size: 1.8rem;
+            color: #feb47b;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
         
+        .people-management-section textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #4e54c8;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            margin-bottom: 15px;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .people-management-section .btn {
+            margin-top: 10px;
+            display: block; /* Make button full width or adjust as needed */
+            width: 100%; /* Or 'fit-content' and center it */
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .run-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px; /* Adjusted from margin: 20px auto; */
+            text-align: left;
+            font-size: 1.1rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #e0e0ff;
+        }
+        .run-info i {
+            margin-right: 8px;
+            color: #feb47b;
+        }
+        #current-people-list {
+            font-weight: bold;
+            color: #fff;
+        }
+
         .control-panel {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
@@ -112,6 +175,7 @@
             font-size: 1.1rem;
             text-align: center;
             background: rgba(255,255,255,0.9);
+            color: #333;
             font-weight: 600;
         }
         
@@ -127,6 +191,7 @@
             font-weight: 600;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
             box-shadow: 0 5px 15px rgba(78, 84, 200, 0.4);
         }
@@ -156,6 +221,7 @@
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 25px;
             margin-bottom: 40px;
+            min-height: 100px; /* So it doesn't collapse when empty */
         }
         
         .person-card {
@@ -196,6 +262,7 @@
             color: #fff;
             margin-bottom: 15px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            word-break: break-all;
         }
         
         .random-number {
@@ -216,14 +283,8 @@
             margin-top: 10px;
         }
         
-        .history-section {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+        .history-section { /* Now uses .config-section */
+            /* background, border-radius, padding, box-shadow, margin-bottom, backdrop-filter, border inherited */
         }
         
         .history-header {
@@ -233,11 +294,9 @@
             margin-bottom: 20px;
         }
         
-        .history-title {
-            font-size: 1.8rem;
-            color: #feb47b;
-            font-weight: 700;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        .history-title { /* Now uses .section-title */
+            /* font-size, color, font-weight, text-shadow inherited */
+            margin-bottom: 0; /* Override from .section-title */
         }
         
         .history-container {
@@ -256,6 +315,8 @@
             justify-content: space-between;
             align-items: center;
             transition: background 0.3s;
+            flex-wrap: wrap; /* Allow wrapping for smaller screens */
+            gap: 10px; /* Add gap for wrapped items */
         }
         
         .history-item:hover {
@@ -282,6 +343,8 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            flex-grow: 1; /* Allow it to take remaining space */
+            justify-content: flex-end;
         }
         
         .history-number {
@@ -335,40 +398,7 @@
             margin-top: 20px;
         }
         
-        .run-info {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px auto;
-            max-width: 800px;
-            text-align: center;
-            font-size: 1.1rem;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        @media (max-width: 768px) {
-            .results-container {
-                grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-            }
-            
-            .control-panel {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            h1 {
-                font-size: 2.4rem;
-            }
-            
-            .counter {
-                position: static;
-                margin: 15px auto;
-                width: fit-content;
-            }
-        }
-        
-        /* 粒子背景效果 */
+        /* 粒子背景效果 (unchanged) */
         .particles {
             position: fixed;
             top: 0;
@@ -402,6 +432,48 @@
                 opacity: 0;
             }
         }
+
+        @media (max-width: 768px) {
+            .results-container {
+                grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            }
+            .person-card {
+                min-height: 180px;
+                padding: 20px 15px;
+            }
+            .person-name {
+                font-size: 1.3rem;
+            }
+            .random-number {
+                font-size: 2.8rem;
+                min-height: 50px;
+            }
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .range-control {
+                justify-content: space-between;
+            }
+            
+            h1 {
+                font-size: 2.4rem;
+            }
+            
+            .counter {
+                position: static;
+                margin: 15px auto;
+                width: fit-content;
+            }
+            .history-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .history-numbers {
+                justify-content: flex-start;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -418,20 +490,27 @@
             </div>
         </header>
         
-        <div class="run-info">
-            <i class="fas fa-info-circle"></i> 当前人员: 金牌教练, Mashiro, CL4R1TY, Nijika, 量子跃迁, 耄耋, 江川, ezking, 欧皇布偶, 缸砸仑破拿
-        </div>
-        
         <main>
+            <div class="people-management-section config-section">
+                <h2 class="section-title"><i class="fas fa-users-cog"></i> 管理人员列表</h2>
+                <textarea id="people-input" rows="5" placeholder="每行输入一个名字，或用英文逗号 (,) 分隔。"></textarea>
+                <button id="update-people-btn" class="btn">
+                    <i class="fas fa-sync-alt"></i> 更新人员列表
+                </button>
+                <div class="run-info" id="current-people-display-container">
+                    <i class="fas fa-info-circle"></i> 当前人员: <span id="current-people-list">未设置</span>
+                </div>
+            </div>
+
             <div class="control-panel">
                 <div class="range-control">
                     <label for="min-value"><i class="fas fa-arrow-down"></i> 最小值:</label>
-                    <input type="number" id="min-value" value="1" min="0" max="999">
+                    <input type="number" id="min-value" value="1" min="0" max="99998">
                 </div>
                 
                 <div class="range-control">
                     <label for="max-value"><i class="fas fa-arrow-up"></i> 最大值:</label>
-                    <input type="number" id="max-value" value="100" min="1" max="1000">
+                    <input type="number" id="max-value" value="100" min="1" max="99999">
                 </div>
                 
                 <button class="btn btn-generate" id="generate-btn">
@@ -439,7 +518,7 @@
                 </button>
                 
                 <button class="btn" id="toggle-history">
-                    <i class="fas fa-history"></i> 历史记录
+                    <i class="fas fa-eye-slash"></i> 隐藏历史
                 </button>
             </div>
             
@@ -447,9 +526,9 @@
                 <!-- 结果卡片将由JS动态生成 -->
             </div>
             
-            <div class="history-section" id="history-section">
+            <div class="history-section config-section" id="history-section">
                 <div class="history-header">
-                    <h2 class="history-title"><i class="fas fa-history"></i> 历史记录</h2>
+                    <h2 class="history-title section-title"><i class="fas fa-history"></i> 历史记录</h2>
                     <button class="btn" id="clear-history">
                         <i class="fas fa-trash"></i> 清空记录
                     </button>
@@ -464,7 +543,7 @@
                     <i class="fas fa-file-download"></i> 导出数据
                 </button>
                 <button class="btn btn-reset" id="reset-btn">
-                    <i class="fas fa-redo"></i> 重置分配器
+                    <i class="fas fa-redo"></i> 重置当前结果
                 </button>
             </div>
         </main>
@@ -476,19 +555,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 定义10个人员
-            const people = [
-                '金牌教练', 
-                'Mashiro', 
-                'CL4R1TY', 
-                'Nijika', 
-                '量子跃迁', 
-                '耄耋', 
-                '江川', 
-                'ezking', 
-                '欧皇布偶', 
-                '缸砸仑破拿'
+            const defaultPeopleList = [
+                '金牌教练', 'Mashiro', 'CL4R1TY', 'Nijika', '量子跃迁', 
+                '耄耋', '江川', 'ezking', '欧皇布偶', '缸砸仑破拿'
             ];
+            
+            let people = [];
             
             const resultsContainer = document.getElementById('results-container');
             const historyContainer = document.getElementById('history-container');
@@ -502,59 +574,77 @@
             const historySection = document.getElementById('history-section');
             const runCountElement = document.getElementById('run-count');
             
+            const peopleInput = document.getElementById('people-input');
+            const updatePeopleBtn = document.getElementById('update-people-btn');
+            const currentPeopleListDisplay = document.getElementById('current-people-list');
+
             let history = [];
             let currentResults = [];
             let runCount = 0;
             
-            // 初始化粒子背景
             function initParticles() {
                 const particlesContainer = document.getElementById('particles');
+                if (!particlesContainer) return;
                 const particleCount = 30;
                 
                 for (let i = 0; i < particleCount; i++) {
                     const particle = document.createElement('div');
                     particle.classList.add('particle');
-                    
-                    // 随机大小 (2px 到 8px)
                     const size = Math.random() * 6 + 2;
                     particle.style.width = `${size}px`;
                     particle.style.height = `${size}px`;
-                    
-                    // 随机位置
                     particle.style.left = `${Math.random() * 100}%`;
                     particle.style.top = `${Math.random() * 100}%`;
-                    
-                    // 随机动画延迟
                     particle.style.animationDelay = `${Math.random() * 15}s`;
-                    
                     particlesContainer.appendChild(particle);
                 }
             }
             
-            // 从localStorage加载数据
             function loadData() {
+                const savedPeople = localStorage.getItem('randomPeopleList');
+                if (savedPeople) {
+                    people = JSON.parse(savedPeople);
+                } else {
+                    people = [...defaultPeopleList]; // Use default if nothing in localStorage
+                }
+
                 const savedHistory = localStorage.getItem('randomHistory');
-                const savedRunCount = localStorage.getItem('runCount');
-                
                 if (savedHistory) {
                     history = JSON.parse(savedHistory);
                 }
                 
+                const savedRunCount = localStorage.getItem('runCount');
                 if (savedRunCount) {
                     runCount = parseInt(savedRunCount);
-                    runCountElement.textContent = runCount;
                 }
+                runCountElement.textContent = runCount;
             }
             
-            // 保存数据到localStorage
             function saveData() {
+                localStorage.setItem('randomPeopleList', JSON.stringify(people));
                 localStorage.setItem('randomHistory', JSON.stringify(history));
                 localStorage.setItem('runCount', runCount.toString());
             }
+
+            function populatePeopleInput() {
+                peopleInput.value = people.join('\n');
+            }
+
+            function updateCurrentPeopleDisplay() {
+                if (people.length > 0) {
+                    currentPeopleListDisplay.textContent = people.join(', ');
+                } else {
+                    currentPeopleListDisplay.textContent = '未设置人员，请在上方文本框中添加。';
+                }
+            }
             
-            // 初始化结果卡片
             function initializeCards() {
                 resultsContainer.innerHTML = '';
+                if (people.length === 0) {
+                    resultsContainer.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; color: #ffc107;">请先在“管理人员列表”中添加人员并点击“更新人员列表”。</p>';
+                    currentResults = [];
+                    return;
+                }
                 people.forEach(person => {
                     const card = document.createElement('div');
                     card.className = 'person-card';
@@ -565,51 +655,84 @@
                     `;
                     resultsContainer.appendChild(card);
                 });
-                currentResults = [];
+                currentResults = []; // Clear previous results when re-initializing cards
+            }
+
+            function handleUpdatePeopleList() {
+                const rawInput = peopleInput.value.trim();
+                if (rawInput === "") {
+                    people = [];
+                } else {
+                    people = rawInput
+                        .split(/[\n,]+/)
+                        .map(name => name.trim())
+                        .filter(name => name !== '');
+                }
+                
+                if (people.length === 0) {
+                     alert('人员列表不能为空。请输入至少一个名字。');
+                     // Optionally, revert to previous list or default
+                     // people = localStorage.getItem('randomPeopleList') ? JSON.parse(localStorage.getItem('randomPeopleList')) : [...defaultPeopleList];
+                     // populatePeopleInput(); // re-populate with valid list
+                     // return; // or handle as needed
+                }
+
+                initializeCards();
+                updateCurrentPeopleDisplay();
+                saveData(); // Save new people list
+                alert('人员列表已更新！');
             }
             
-            // 生成随机数
             function generateRandomNumbers() {
-                const min = parseInt(minValueInput.value) || 0;
-                const max = parseInt(maxValueInput.value) || 100;
+                if (people.length === 0) {
+                    alert('人员列表为空，请先添加人员并更新列表！');
+                    return;
+                }
+
+                const min = parseInt(minValueInput.value);
+                const max = parseInt(maxValueInput.value);
                 
+                if (isNaN(min) || isNaN(max)) {
+                    alert('请输入有效的最小值和最大值！');
+                    return;
+                }
                 if (min >= max) {
                     alert('最大值必须大于最小值！');
                     return;
                 }
                 
                 const cards = resultsContainer.querySelectorAll('.person-card');
+                if (cards.length !== people.length) { // Should not happen if initialized correctly
+                    initializeCards(); // Re-sync cards if something went wrong
+                    // alert("人员列表与卡片数量不匹配，请先更新人员列表。");
+                    // return;
+                }
+
                 currentResults = [];
                 
                 people.forEach((person, index) => {
                     const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
                     currentResults.push({ person, number: randomNum });
                     
-                    // 更新卡片
-                    cards[index].querySelector('.random-number').textContent = randomNum;
-                    cards[index].querySelector('.min-max').textContent = `范围: ${min} - ${max}`;
-                    cards[index].classList.add('highlight');
-                    
-                    // 移除高亮动画
-                    setTimeout(() => {
-                        cards[index].classList.remove('highlight');
-                    }, 1500);
+                    if (cards[index]) { // Check if card exists
+                        cards[index].querySelector('.random-number').textContent = randomNum;
+                        cards[index].querySelector('.min-max').textContent = `范围: ${min} - ${max}`;
+                        cards[index].classList.add('highlight');
+                        
+                        setTimeout(() => {
+                            cards[index].classList.remove('highlight');
+                        }, 1500);
+                    }
                 });
                 
-                // 更新运行次数
                 runCount++;
                 runCountElement.textContent = runCount;
-                
-                // 保存到历史记录
                 saveToHistory(min, max);
-                
-                // 保存到localStorage
                 saveData();
             }
             
-            // 保存到历史记录
             function saveToHistory(min, max) {
-                const timestamp = new Date().toLocaleString();
+                const timestamp = new Date().toLocaleString('zh-CN', { hour12: false });
                 history.unshift({
                     runCount: runCount,
                     timestamp,
@@ -618,18 +741,14 @@
                     results: [...currentResults]
                 });
                 
-                // 限制历史记录数量
-                if (history.length > 10) history.pop();
-                
+                if (history.length > 20) history.pop(); // Increased history limit
                 renderHistory();
             }
             
-            // 渲染历史记录
             function renderHistory() {
                 historyContainer.innerHTML = '';
-                
                 if (history.length === 0) {
-                    historyContainer.innerHTML = '<div class="history-item" style="justify-content:center;">暂无记录</div>';
+                    historyContainer.innerHTML = '<div class="history-item" style="justify-content:center; color: #ccc;">暂无历史记录</div>';
                     return;
                 }
                 
@@ -638,11 +757,8 @@
                     historyItem.className = 'history-item';
                     
                     const runDiv = document.createElement('div');
-                    runDiv.className = 'history-run';
-                    runDiv.textContent = `#${record.runCount}`;
-                    runDiv.style.color = '#ff7e5f';
-                    runDiv.style.fontWeight = 'bold';
-                    runDiv.style.minWidth = '50px';
+                    runDiv.style.cssText = 'color: #ff7e5f; font-weight: bold; min-width: 60px;';
+                    runDiv.textContent = `运行 #${record.runCount}`;
                     
                     const timeDiv = document.createElement('div');
                     timeDiv.className = 'history-time';
@@ -671,58 +787,75 @@
                 });
             }
             
-            // 导出数据
             function exportData() {
                 if (currentResults.length === 0) {
-                    alert('没有可导出的数据！');
+                    alert('没有可导出的当前结果！请先生成随机数。');
                     return;
                 }
                 
-                let csvContent = "data:text/csv;charset=utf-8,";
-                csvContent += "人员,随机数,运行次数\n";
+                let csvContent = "\uFEFF"; // BOM for UTF-8 Excel compatibility
+                csvContent += "人员,随机数,运行次数,范围最小值,范围最大值,生成时间\n";
+                const timestamp = new Date().toLocaleString('zh-CN', { hour12: false });
+                const min = parseInt(minValueInput.value);
+                const max = parseInt(maxValueInput.value);
                 
                 currentResults.forEach(result => {
-                    csvContent += `${result.person},${result.number},${runCount}\n`;
+                    csvContent += `"${result.person.replace(/"/g, '""')}",${result.number},${runCount},${min},${max},"${timestamp}"\n`;
                 });
                 
-                const encodedUri = encodeURI(csvContent);
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", `随机数分配_${runCount}.csv`);
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", `随机数分配_运行${runCount}_${new Date().toISOString().slice(0,10)}.csv`);
                 document.body.appendChild(link);
-                
                 link.click();
                 document.body.removeChild(link);
+                URL.revokeObjectURL(url);
             }
             
-            // 重置分配器
-            function resetAll() {
-                if (confirm('确定要重置所有数据吗？当前结果和历史记录都将被清除。')) {
+            function resetCurrentResults() {
+                if (confirm('确定要重置当前卡片上的数字吗？人员列表和历史记录将保留。')) {
                     currentResults = [];
-                    initializeCards();
+                    initializeCards(); // This will reset cards based on current `people` list
                 }
             }
             
-            // 清空历史记录
-            function clearHistory() {
-                if (history.length > 0 && confirm('确定要清空所有历史记录吗？')) {
+            function clearHistoryRecords() {
+                if (history.length > 0 && confirm('确定要清空所有历史记录吗？此操作不可撤销。')) {
                     history = [];
                     renderHistory();
-                    saveData();
+                    saveData(); // Save empty history
+                } else if (history.length === 0) {
+                    alert('历史记录已经是空的。');
                 }
             }
+
+            toggleHistoryBtn.addEventListener('click', () => {
+                const isHidden = historySection.style.display === 'none';
+                historySection.style.display = isHidden ? 'block' : 'none';
+                toggleHistoryBtn.innerHTML = isHidden ?
+                    '<i class="fas fa-eye-slash"></i> 隐藏历史' : '<i class="fas fa-eye"></i> 显示历史';
+            });
             
-            // 事件监听
+            // Event Listeners
+            updatePeopleBtn.addEventListener('click', handleUpdatePeopleList);
             generateBtn.addEventListener('click', generateRandomNumbers);
-            resetBtn.addEventListener('click', resetAll);
+            resetBtn.addEventListener('click', resetCurrentResults);
             downloadBtn.addEventListener('click', exportData);
-            clearHistoryBtn.addEventListener('click', clearHistory);
+            clearHistoryBtn.addEventListener('click', clearHistoryRecords);
             
-            // 初始化
+            // Initial Setup
             initParticles();
             loadData();
+            populatePeopleInput();
+            updateCurrentPeopleDisplay();
             initializeCards();
             renderHistory();
+
+            // Ensure history section is visible by default and button text is correct
+            historySection.style.display = 'block';
+            toggleHistoryBtn.innerHTML = '<i class="fas fa-eye-slash"></i> 隐藏历史';
         });
     </script>
 </body>
